@@ -11,11 +11,17 @@ socket.on('connect', function(){
 });
 
 socket.on('message', function(message){
+    console.log(message);
   logmsg('Message: ' + JSON.stringify(message));
 });    
 
 
  $(document).ready(function() {
+
+    socket.on('message', function(message){
+    console.log(message);
+    logmsg('Message: ' + JSON.stringify(message));
+    }); 
   
   $('#sendmsg').click(function() { 
       console.log("sendmsg"); 

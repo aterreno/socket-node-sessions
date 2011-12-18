@@ -39,12 +39,16 @@ sio.set('authorization', function (data, accept) {
 
 app.get('/', function(req, res){
   res.render('index.jade', { title: 'SuperUploader', sessionID: req.sessionID });  
+
+  sio.sockets.send('message','Man, good to see you back!');
+  sio.sockets.in(req.sessionID).send('message','Man, good to see you back!');
   console.log(req.sessionID);
 });
  
 sio.sockets.on('connection', function (socket) {
     var hs = socket.handshake;
     console.log('A socket with sessionID ' + hs.sessionID + ' connected!');
+    socket.join(hs.sessionID);
     
     var intervalID = setInterval(function () {
         hs.session.reload( function () { 
@@ -54,6 +58,8 @@ sio.sockets.on('connection', function (socket) {
 
     socket.on('ping', function () {
       console.log('ping');
+      // sio.sockets.send('message','got it');
+      sio.sockets.in(hs.sessionID).send('message','Man, good to see you back!');
     });
 
     socket.on('disconnect', function () {
