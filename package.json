@@ -6,9 +6,5 @@
       "express": ">= 0.0.1"
     , "jade": ">= 0.0.1"
     , "socket.io": ">= 0.0.1"
-    , "connect-form": ">= 0.0.1"
-    , "mongoose" : ">= 0.0.1"
-    , "socket.io-sessions" : ">= 0.0.1"
-    , "connect" : ">= 0.0.1"
   }
 }

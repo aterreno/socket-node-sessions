@@ -1,11 +1,10 @@
-var parseCookie = require('connect').utils.parseCookie;
- 
- 
 var io = require('socket.io'),
     express = require('express'),
     MemoryStore = express.session.MemoryStore,
     app = express.createServer(),
-    sessionStore = new MemoryStore();
+    sessionStore = new MemoryStore(),
+    parseCookie = require('connect').utils.parseCookie,
+    Session = require('connect').middleware.session.Session;
  
 app.configure(function () {
     app.use(express.static(__dirname + '/public'));
@@ -18,7 +17,6 @@ app.configure(function () {
 app.listen(3000);
 var sio = io.listen(app);
 
-var Session = require('connect').middleware.session.Session;
 sio.set('authorization', function (data, accept) {
     if (data.headers.cookie) {
         data.cookie = parseCookie(data.headers.cookie);
@@ -46,8 +44,7 @@ app.get('/', function(req, res){
  
 sio.sockets.on('connection', function (socket) {
     var hs = socket.handshake;
-    console.log('A socket with sessionID ' + hs.sessionID 
-        + ' connected!');
+    console.log('A socket with sessionID ' + hs.sessionID + ' connected!');
     
     var intervalID = setInterval(function () {
         hs.session.reload( function () { 
@@ -60,10 +57,7 @@ sio.sockets.on('connection', function (socket) {
     });
 
     socket.on('disconnect', function () {
-        console.log('A socket with sessionID ' + hs.sessionID 
-            + ' disconnected!');
-        
+        console.log('A socket with sessionID ' + hs.sessionID  + ' disconnected!');        
         clearInterval(intervalID);
-    });
- 
+    }); 
 });
