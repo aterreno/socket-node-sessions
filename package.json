@@ -6,5 +6,6 @@
       "express": ">= 0.0.1"
     , "jade": ">= 0.0.1"
     , "socket.io": ">= 0.0.1"
+    , "connect-form": ">= 0.0.1"
   }
 }

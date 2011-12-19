@@ -13,7 +13,13 @@ socket.on('connect', function(){
 socket.on('message', function(message){
     console.log(message);
   logmsg('Message: ' + JSON.stringify(message));
-});    
+});
+
+socket.on('progress', function (data) {
+    console.log(data);
+    $("#progress").text("Progress: " + data.percent + '%');    
+});
+    
 
 
  $(document).ready(function() {

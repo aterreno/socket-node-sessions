@@ -1,10 +1,12 @@
 var io = require('socket.io'),
     express = require('express'),
     MemoryStore = express.session.MemoryStore,
-    app = express.createServer(),
+    form = require('connect-form'),
+    app = express.createServer(form({ keepExtensions: true })),   
     sessionStore = new MemoryStore(),
     parseCookie = require('connect').utils.parseCookie,
-    Session = require('connect').middleware.session.Session;
+    Session = require('connect').middleware.session.Session,
+    progressEvent = new require('./progressEvent').ProgressEvent();
  
 app.configure(function () {
     app.use(express.static(__dirname + '/public'));
@@ -41,6 +43,35 @@ app.get('/', function(req, res){
   res.render('index.jade', { title: 'Socket.IO, Express & Sessions', sessionID: req.sessionID });  
   console.log(req.sessionID);
 });
+
+app.get('/test', function(req, res){  
+  console.log(req.sessionID);
+  sio.sockets.in(req.sessionID).send('message', 'test');
+  res.render('index.jade', { title: 'Socket.IO, Express & Sessions', sessionID: req.sessionID });  
+  sio.sockets.in(req.sessionID).send('message', 'test');
+});
+
+app.post('/upload', function(req, res, next){
+
+  console.log(req.sessionID);
+
+  sio.sockets.in(req.sessionID).send('message','post');
+
+  req.form.complete(function(err, fields, files){
+    if (err) {
+      console.log(err);
+      next(err);
+    } else {
+      res.redirect('back');
+    }
+  });
+
+  req.form.on('progress', function(bytesReceived, bytesExpected) {    
+    var percent = (bytesReceived / bytesExpected * 100) | 0;
+    console.log(percent);
+    progressEvent.download(percent);    
+  });
+});
  
 sio.sockets.on('connection', function (socket) {
     var hs = socket.handshake;
@@ -52,6 +83,11 @@ sio.sockets.on('connection', function (socket) {
             hs.session.touch().save();
         });
     }, 60 * 1000);
+
+    progressEvent.on('progress', function(percent) {
+      sio.sockets.in(hs.sessionID).send('progress', percent);
+      console.log(percent);
+    });
 
     socket.on('ping', function () {
       console.log('ping');    
