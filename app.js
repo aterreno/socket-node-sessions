@@ -39,21 +39,21 @@ sio.set('authorization', function (data, accept) {
     }
 }); 
 
-app.get('/', function(req, res){
+app.get('/', function(req, res) {
+  console.log("GET / with sessionID:" + req.sessionID);
   res.render('index.jade', { title: 'Socket.IO, Express & Sessions', sessionID: req.sessionID });  
   console.log(req.sessionID);
 });
 
 app.get('/test', function(req, res){  
-  console.log(req.sessionID);
+  console.log("GET /test with sessionID:" + req.sessionID);
   sio.sockets.in(req.sessionID).send('message', 'test');
   res.render('index.jade', { title: 'Socket.IO, Express & Sessions', sessionID: req.sessionID });  
   sio.sockets.in(req.sessionID).send('message', 'test');
 });
 
 app.post('/upload', function(req, res, next){
-
-  console.log(req.sessionID);
+  console.log("POST /upload with sessionID:" + req.sessionID);
 
   sio.sockets.in(req.sessionID).send('message','post');
 
@@ -91,7 +91,7 @@ sio.sockets.on('connection', function (socket) {
 
     socket.on('ping', function () {
       console.log('ping');    
-      sio.sockets.in(hs.sessionID).send('message','Man, good to see you back!');
+      sio.sockets.in(hs.sessionID).send('message','ping back');
     });
 
     socket.on('disconnect', function () {
