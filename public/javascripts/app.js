@@ -1,28 +1,15 @@
-var socket = io.connect();
-
-var logmsg = function(msg) { 
-  document.getElementById('msgbox').innerHTML += msg;
+// Enable pusher logging - don't include this in production
+Pusher.log = function(message) {
+  if (window.console && window.console.log) window.console.log(message);
 };
 
- $(document).ready(function() {
+// Flash fallback logging - don't include this in production
+WEB_SOCKET_DEBUG = true;
 
-  socket.on('connect', function(){
-    logmsg('<b>Connect!</b>');
-    socket.send('ping');
-  });
+var pusher = new Pusher('7d718e13067550e5ad49');
+var channel = pusher.subscribe('test_channel');
+channel.bind('my_event', function(data) {
+  alert(data);
+});
 
-  socket.on('progress', function (data) {
-    console.log(data);
-    $("#progress").text("Progress: " + data.percent + '%');    
-  });
-
-  socket.on('message', function(message){
-    console.log(message);
-    logmsg('Message: ' + message);
-  }); 
-  
-  $('#sendmsg').click(function() { 
-      console.log("sendmsg"); 
-      socket.send('ping'); 
-  });  
- });
+ $(document).ready(function() {};
