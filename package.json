@@ -6,5 +6,6 @@
       "express": ">= 0.0.1"
     , "jade": ">= 0.0.1"    
     , "connect-form": ">= 0.0.1"
+    , "node-pusher" : ">= 0.0.1"
   }
 }
