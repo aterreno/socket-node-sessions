@@ -1,9 +1,6 @@
 h1= title
 p Welcome to #{title}
 
-input(id="sendmsg", type="button", value="Ping!")
-pre(id="msgbox")
-
 form(action='/upload', enctype='multipart/form-data', method='post')
   input(type='text', name='title')
   input(type='file', name='upload')
